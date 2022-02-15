@@ -81,7 +81,7 @@ void DalyBmsComponent::decode_data_(std::vector<uint8_t> data) {
       checksum = sum;
 
       if (checksum == it[12]) {
-        ESP_LOGD(TAG,"Got Data1");
+        ESP_LOGD(TAG,"Got Data %i",it[2]);
         switch (it[2]) {
           case DALY_REQUEST_BATTERY_LEVEL:
             if (this->voltage_sensor_) {
@@ -158,6 +158,7 @@ void DalyBmsComponent::decode_data_(std::vector<uint8_t> data) {
             }
             break;
           case DALY_REQUEST_CELL_VOLTAGE:
+            ESP_LOGD(TAG, "GOT right Dataa");
             ESP_LOGD(TAG, "Got Frame=%i  CELL1=%.3f%% CELL2=%.3f% V CELL3=%.3f% V",it[5] ,(float) encode_uint16(it[6], it[7]) / 1000, (float) encode_uint16(it[8], it[9]) / 1000,(float) encode_uint16(it[10], it[11]) / 1000);
             break;
           case DALY_REQUEST_TEMPERATURE:
