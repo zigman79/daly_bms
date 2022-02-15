@@ -16,6 +16,7 @@ static const uint8_t DALY_REQUEST_MIN_MAX_VOLTAGE = 0x91;
 static const uint8_t DALY_REQUEST_MIN_MAX_TEMPERATURE = 0x92;
 static const uint8_t DALY_REQUEST_MOS = 0x93;
 static const uint8_t DALY_REQUEST_STATUS = 0x94;
+static const uint8_t DALY_REQUEST_CELL_VOLTAGE = 0x95;
 static const uint8_t DALY_REQUEST_TEMPERATURE = 0x96;
 
 void DalyBmsComponent::setup() {}
@@ -31,6 +32,7 @@ void DalyBmsComponent::update() {
   this->request_data_(DALY_REQUEST_MIN_MAX_TEMPERATURE);
   this->request_data_(DALY_REQUEST_MOS);
   this->request_data_(DALY_REQUEST_STATUS);
+  this->request_data_(DALY_REQUEST_CELL_VOLTAGE);
   this->request_data_(DALY_REQUEST_TEMPERATURE);
 
   std::vector<uint8_t> get_battery_level_data;
@@ -155,7 +157,9 @@ void DalyBmsComponent::decode_data_(std::vector<uint8_t> data) {
               this->cells_number_->publish_state(it[4]);
             }
             break;
-
+          case DALY_REQUEST_CELL_VOLTAGE:
+            ESP_LOGD(TAG, "Got Frame=%i  CELL1=%.3f%% CELL1=%.3f% V CELL1=%.3f% V",it[5] ,(float) encode_uint16(it[6], it[7]) / 1000, (float) encode_uint16(it[8], it[9]) / 1000,(float) encode_uint16(it[10], it[11]) / 1000);
+            break;
           case DALY_REQUEST_TEMPERATURE:
             if (it[4] == 1) {
               if (this->temperature_1_sensor_) {
